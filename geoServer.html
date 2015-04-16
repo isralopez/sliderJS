@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="pyramid web application">
+    <meta name="author" content="Pylons Project">
+    <link rel="shortcut icon" href="http://localhost:8080/Mapa/static/css/pyramid-16x16.png">
+
+    <title>Mapas Bing en Pyramid Web Framework</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this scaffold -->
+    <link href="http://localhost:8080/Mapa/static/css/theme.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="//oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.0.0/css/ol.css" type="text/css">
+    <style>
+      .map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+    <script src="http://openlayers.org/en/v3.0.0/build/ol.js" type="text/javascript"></script>
+    <script src="//oss.maxcdn.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+
+    <div class="starter-template">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10">
+            <div class="content">
+              <h1><span class="font-semi-bold">Pyramid</span> <span class="smaller">Starter scaffold</span></h1>
+              <p class="lead">Bienvenido a <span class="font-normal">MAPAS</span>, una&nbsp;aplicacion generada&nbsp;por<br></br>el <span class="font-normal">Pyramid Web Framework 1.5.1</span>.</p>
+            </div>
+          </div>
+          <div class="col-md-2" align="center">
+            <img class="logo GEO" src="http://localhost:8080/Mapa/static/css/logo.jpg" alt="pyramid web framework">
+          </div>
+        </div>
+
+        <h2><b>EJEMPLO CAMBIO DE CAPAS</b></h2>
+        <br>Selecciona vista</br>
+        <select id="layer-select">
+            <option value="Aerial">Aerea</option>
+            <option value="AerialWithLabels" selected>Aerea con nombres</option>
+            <option value="Road">Caminos</option>
+            <option value="collinsBart">Collins Bart</option>
+            <option value="ordnanceSurvey">Ordnance Survey</option>
+        </select>
+
+        <div id="map" class="map"></div>
+        <script type="text/javascript">
+            var styles = [
+              'Road',
+              'Aerial',
+              'AerialWithLabels',
+              'collinsBart',
+              'ordnanceSurvey'
+            ];
+            var layers = [];
+            var i, ii;
+            for (i = 0, ii = styles.length; i < ii; ++i) {
+              layers.push(new ol.layer.Tile({
+                visible: false,
+                preload: Infinity,
+                source: new ol.source.BingMaps({
+                  key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
+                  imagerySet: styles[i]
+                })
+              }));
+            }
+            var map = new ol.Map({
+              layers: layers,
+              target: 'map',
+              view: new ol.View({
+                center: [-6655.5402445057125, 6709968.258934638],
+                zoom: 13
+              })
+            });
+
+            $('#layer-select').change(function() {
+              var style = $(this).find(':selected').val();
+              var i, ii;
+              for (i = 0, ii = layers.length; i < ii; ++i) {
+                layers[i].setVisible(styles[i] == style);
+              }
+            });
+            $('#layer-select').trigger('change');
+
+        </script>
+
+        <button type="button" onclick="map.getView().setZoom(map.getView().getZoom() + 1);">Z + </button>
+        <button type="button" onclick="map.getView().setZoom(map.getView().getZoom() - 1);">Z - </button>
+
+        <br></br>
+        <br></br>
+
+        <h3><b>MAPA CON CAPA LOCAL E INFORMACIÓN </b></h3>
+
+        <div id="map1" class="map1"></div>
+
+        <script type="text/javascript">
+           var mexico = ol.proj.transform([-100.41, 24.82], 'EPSG:4326', 'EPSG:3857');
+
+
+           var bounds = [
+                -118.408, 14.532,
+                -86.709, 32.719
+           ];
+
+           var wmsSource = new ol.source.ImageWMS({
+              url: 'http://192.168.5.132/geoserver/geonode/wms',
+              params: {
+                'LAYERS': 'geonode:vpr4mgw',
+                'FORMAT': 'image/png',
+                'CRS': 'EPSG:4326',
+                'TILED': 'true',
+                'VERSION': '1.1.0',
+                'TRANSPARENT': 'true'
+              },
+              serverType: 'geoserver'
+            });
+
+           var BaseLayer = new ol.layer.Tile({
+                extent: bounds,
+                source: new ol.source.TileWMS({
+                  url: 'http://demo.opengeo.org/geoserver/wms',
+                  params: {
+                    'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+                  }
+                })
+           });
+
+           var wmsLayer = new ol.layer.Image({
+              extent: bounds,
+              source: wmsSource
+           });
+
+
+            var view = new ol.View({
+
+              projection: "EPSG:4326",
+              center: [-100.41, 24.82],
+              extent: bounds,
+              zoom: 4
+            });
+
+            var map = new ol.Map({
+              controls: ol.control.defaults().extend([
+                new ol.control.ScaleLine({
+                  units: 'degrees'
+                })
+              ]),
+              layers: [BaseLayer, wmsLayer],
+              target: 'map1',
+              view: view
+            });
+
+            map.on('singleclick', function(evt) {
+              document.getElementById('info').innerHTML = '';
+              var viewResolution = /** @type {number} */ (view.getResolution());
+              var url = wmsSource.getGetFeatureInfoUrl(
+                  evt.coordinate, viewResolution, 'EPSG:4326',
+                  {'INFO_FORMAT': 'text/html'});
+              if (url) {
+                document.getElementById('info').innerHTML =
+                    '<iframe seamless src="' + url + '" width="680"></iframe>';
+              }
+            });
+
+        </script>
+
+        <div class="span 4 offset4">
+          <div id="info" class="alert alert-success">
+            &nbsp;
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="links">
+            <ul>
+              <li class="current-version">Generated by v1.5.1</li>
+
+              <li><i class="glyphicon glyphicon-bookmark icon-muted"></i><a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">Docs</a></li>
+              <li><i class="glyphicon glyphicon-cog icon-muted"></i><a href="https://github.com/Pylons/pyramid">Github Project</a></li>
+              <li><i class="glyphicon glyphicon-globe icon-muted"></i><a href="irc://irc.freenode.net#pyramid">IRC Channel</a></li>
+              <li><i class="glyphicon glyphicon-home icon-muted"></i><a href="http://pylonsproject.org">Pylons Project</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="copyright">
+            Copyright &copy; Pylons Project
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+
+  </body>
+</html>
