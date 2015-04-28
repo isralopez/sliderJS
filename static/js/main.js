@@ -98,7 +98,7 @@
       projection: "EPSG:4326",
       center: [-100.41, 24.82],
       extent: bounds,
-      zoom: 4
+      zoom: 5
     });
     
     var allLayers = [BaseLayer]
@@ -114,28 +114,24 @@
     .concat(wmsLayer3)
     .concat(wmsLayer4)
   
-    var map = new ol.Map({
-      controls: ol.control.defaults().extend([
-        new ol.control.ScaleLine({
-          units: 'degrees'
-        })
-      ]),
+    var map = new ol.Map({      
       layers: allLayers,
+      renderer: 'canvas',
       target: 'map',
       view: view
     });
 
-    //map.on('singleclick', function(evt) {
-      //document.getElementById('info').innerHTML = '';
-      //var viewResolution = /** @type {number} */ (view.getResolution());
-      //var url = wmsSource.getGetFeatureInfoUrl(
-          //evt.coordinate, viewResolution, 'EPSG:4326',
-          //{'INFO_FORMAT': 'text/html'});
-      //if (url) {
-        //document.getElementById('info').innerHTML =
-            //'<iframe seamless src="' + url + '" width="680"></iframe>';
-      //}
-    //});
+    map.on('singleclick', function(evt) {
+      document.getElementById('info').innerHTML = '';
+      var viewResolution = /** @type {number} */ (view.getResolution());
+      var url = wmsSource.getGetFeatureInfoUrl(
+          evt.coordinate, viewResolution, 'EPSG:4326',
+          {'INFO_FORMAT': 'text/html'});
+      if (url) {
+        document.getElementById('info').innerHTML =
+            '<iframe seamless src="' + url + '" width="680"></iframe>';
+      }
+    });
 
 	// Enciende la capa sobre la que se da clic
 	  $('#radios').click(function(e) {

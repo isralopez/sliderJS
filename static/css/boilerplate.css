@@ -138,9 +138,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 .main-container {
-  max-width: 1200px;
+  /* max-width: 1200px;*/
   margin: 0 auto;
-  background: #f2f1ef;
+  /*background: #f2f1ef;*/
+  background: 'transparent';
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -150,12 +151,12 @@ body {
 }
 .header {
   position: relative;
-  background: #4b77be;
-  padding: 24px 32px;
+  background: #32A162;
+  padding: 12px 20px;
 }
 .header h1 {
   font-weight: 400;
-  font-size: 42px;
+  font-size: 35px;
   color: #f2f1ef;
   text-shadow: 2px 2px 0 #4b77be;
   letter-spacing: -1px;
@@ -244,7 +245,7 @@ body {
   }
   .map {
     position: absolute;
-    height: 70%;
+    height: 100%;
     padding: 0;
   }
   .map .container {
@@ -364,7 +365,8 @@ body {
   position: absolute;
   display: block;
   cursor: pointer;
-  color: #5e5e5e;
+  /*color: #5e5e5e;*/
+  color: #F7F2E0;
   text-align: center;
 }
 .radios-to-slider.medium .slider-label {
